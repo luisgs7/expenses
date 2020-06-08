@@ -1,6 +1,5 @@
-# expenses
+## App to manage expenses
 
-A new Flutter application.
 
 ## Getting Started
 
