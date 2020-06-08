@@ -15,6 +15,22 @@ class ExpensesApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 18,
+              ),
+            ),
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+        ),
       ),
       home: MyHomePage(),
     );
@@ -50,8 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  final _transactions = [
-    Transaction(
+  final List<Transaction> _transactions = [
+    /* Transaction(
       id: 't1',
       title: 'Novo tênis de Corrida',
       value: 310.76,
@@ -62,14 +78,16 @@ class _MyHomePageState extends State<MyHomePage> {
       title: 'Conta de luz',
       value: 211.30,
       date: DateTime.now(),
-    )
+    )*/
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Despesas Pessoais"),
+        title: Text(
+          "Despesas Pessoais",
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
