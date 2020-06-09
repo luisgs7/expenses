@@ -19,9 +19,6 @@ class Chart extends StatelessWidget {
         bool sameMonth = recentTransaction[i].date.month == weekDay.month;
         bool sameYear = recentTransaction[i].date.year == weekDay.year;
 
-        print(DateFormat.E().format(weekDay)[0]);
-        print(totalsum);
-
         if (sameDay && sameMonth && sameYear) {
           totalsum += recentTransaction[i].value;
         }
@@ -43,7 +40,9 @@ class Chart extends StatelessWidget {
       elevation: 6,
       margin: EdgeInsets.all(20),
       child: Row(
-        children: <Widget>[],
+        children: groupedTransactions.map((tr) {
+          return Text("${tr['day']}: ${tr['value']}");
+        }).toList(),
       ),
     );
   }
