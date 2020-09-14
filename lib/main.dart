@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:expenses/components/chart.dart';
@@ -48,6 +49,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
+
   List<Transaction> get _recentTransaction {
     return _transactions.where((tr) {
       return tr.date.isAfter(DateTime.now().subtract(
@@ -89,31 +92,77 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Despesas Pessoais",
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandsCape = mediaQuery.orientation == Orientation.landscape;
+    final appBar = AppBar(
+      title: Text(
+        "Despesas Pessoais",
+        style: TextStyle(
+          fontSize: 20 * mediaQuery.textScaleFactor,
         ),
-        actions: <Widget>[
+      ),
+      actions: <Widget>[
+        if (isLandsCape)
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _openTransactionForModal(context),
+            icon: Icon(
+              _showChart ? Icons.list : Icons.show_chart,
+            ),
+            onPressed: () {
+              setState(() {
+                _showChart = _showChart = !_showChart;
+              });
+            },
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Chart(_recentTransaction),
-            TransactionList(_transactions, _removeTransaction),
-          ],
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _openTransactionForModal(context),
+        ),
+      ],
+    );
+
+    final availableHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
+
+    return Scaffold(
+      appBar: appBar,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              /* if(isLandsCape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Exibir Gráfico"),
+                  Switch(value: _showChart, onChanged: (value){
+                    setState(() {
+                      _showChart = value;
+                    });
+                  }),
+                ],
+              ),*/
+              if (_showChart || !isLandsCape)
+                Container(
+                  height: availableHeight * (isLandsCape ? 0.7 : 0.3),
+                  child: Chart(_recentTransaction),
+                ),
+              if (!_showChart || !isLandsCape)
+                Container(
+                  height: availableHeight * (isLandsCape ? 1 : 0.7),
+                  child: TransactionList(_transactions, _removeTransaction),
+                ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _openTransactionForModal(context),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _openTransactionForModal(context),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
